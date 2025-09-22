@@ -1,1 +1,59 @@
+<?php
+  //create array from 1 to 50
+  $numbers = range(1, 50);
 
+  //loop through numbers and collect even ones
+  $evenNumbersArray = [];
+  foreach ($numbers as $num) {
+    if ($num % 2 === 0) {
+        $evenNumbersArray[] = $num;
+    }
+  }
+
+  // give even numbers a separator
+  $evenNumbers = implode(" - ", $evenNumbersArray);
+
+  //create form using heredoc
+  $form = <<<HTML
+  <form method="post" action="#">
+    <div class="mb-3">
+      <label for="email" class="form-label">Email address</label>
+      <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="name@example.com">
+    </div>
+    <div class="mb-3">
+      <label for="textareaExample" class="form-label">Example textarea</label>
+      <textarea class="form-control" id="textareaExample" name="textareaExample" rows="3"></textarea>
+    </div>
+  </form>
+  HTML;
+
+  //function to create a table
+  function createTable($rows, $columns) {
+    $table = '<table class="table table-bordered">';
+    for ($r = 1; $r <= $rows; $r++) {
+      $table .= '<tr>';
+      for ($c = 1; $c <= $columns; $c++) {
+        $table .= "<td>Row $r Col $c</td>";
+      }
+      $table .= '</tr>';
+    }
+    $table .= '</table>';
+    return $table;
+  }
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Form Project</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="container">
+    <?php
+        echo $evenNumbers;
+        echo $form;
+        echo createTable(8, 6);
+    ?>
+</body>
+</html>
