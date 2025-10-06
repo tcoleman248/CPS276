@@ -1,0 +1,83 @@
+index.php
+
+<?php
+require_once "calculator.php";
+
+$Calculator = new Calculator();
+
+$result = "";
+$result .= $Calculator->calc("*", 10, 2);
+$result .= $Calculator->calc("*", 4.56, 2);
+$result .= $Calculator->calc("/", 10, 2);
+$result .= $Calculator->calc("/", 10, 3);
+$result .= $Calculator->calc("/", 10, 0);
+$result .= $Calculator->calc("/", 0, 10);
+$result .= $Calculator->calc("-", 10, 2);
+$result .= $Calculator->calc("-", 10, 20);
+$result .= $Calculator->calc("+", 10.5, 2);
+$result .= $Calculator->calc("+", 10.5, 0);
+$result .= $Calculator->calc("*", 10);
+$result .= $Calculator->calc("+", "a", 10);
+$result .= $Calculator->calc("+", 10, "a");
+$result .= $Calculator->calc(10);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PHP Calculator</title>
+</head>
+<body>
+    <h1>Calculator Output</h1>
+    <main>
+        <?php echo $result ?>
+    </main>
+</body>
+</html>
+
+calculator.php
+
+<?php
+_________________________________________________________________________________________________________________________________
+class Calculator
+{
+    //public function becasue its in a class
+    public function calc($operator = null, $num1 = null, $num2 = null)
+    {
+        // checking for 3 arguments
+        if (func_num_args() !== 3) {
+            return "<p>Cannot perform operation. You must have three arguments. A string for the operator (+,-,*,/) and two integers or floats for the numbers.</p>\n";
+        }
+
+        // checking operator
+        if (!in_array($operator, ["+", "-", "*", "/"])) {
+            return "<p>Cannot perform operation. You must have three arguments. A string for the operator (+,-,*,/) and two integers or floats for the numbers.</p>\n";
+        }
+
+        if (!is_numeric($num1) || !is_numeric($num2)) {
+            return "<p>Cannot perform operation. You must have three arguments. A string for the operator (+,-,*,/) and two integers or floats for the numbers.</p>\n";
+        }
+
+        //switch case for calculations
+        switch ($operator) {
+            case '+':
+                $answer = $num1 + $num2;
+                break;
+            case '-':
+                $answer = $num1 - $num2;
+                break;
+            case '*':
+                $answer = $num1 * $num2;
+                break;
+            case '/':
+                if ($num2 == 0) {
+                    return "<p>The calculation is $num1 / $num2. The answer is cannot divide a number by zero.</p>\n";
+                }
+                $answer = $num1 / $num2;
+                break;
+        }
+        return "<p>The calculation is $num1 $operator $num2. The answer is $answer.</p>\n";
+    }
+}
+?>
