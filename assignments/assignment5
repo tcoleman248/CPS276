@@ -1,0 +1,107 @@
+index.php
+
+<?php
+require_once 'classes/directories.php';
+
+$message = '';
+$link = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $directoryName = $_POST['directory_name'] ?? '';
+    $fileContent = $_POST['file_content'] ?? '';
+
+    $directories = new Directories();
+    $result = $directories->createDirectoryAndFile($directoryName, $fileContent);
+
+    if ($result['success']) {
+        $link = 'directories/' . $directoryName . '/readme.txt';
+    }
+
+    $message = $result['message'];
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Directory and File</title>
+</head>
+<body>
+
+<?php if (!empty($link)): ?>
+    <p><a href="<?= htmlspecialchars($link) ?>" target="_blank">Path where the file is located</a></p>
+<?php endif; ?>
+
+<?php if (!empty($message)): ?>
+    <p><?= htmlspecialchars($message) ?></p>
+<?php endif; ?>
+
+<form method="post">
+    <label for="directory_name">Directory Name (letters only):</label><br>
+    <input type="text" id="directory_name" name="directory_name" required><br><br>
+
+    <label for="file_content">Text Content:</label><br>
+    <textarea id="file_content" name="file_content" rows="6" cols="40" required></textarea><br><br>
+
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>
+
+_____________________________________________________________________
+
+directories.php
+
+<?php
+
+// class for directories
+class Directories
+{
+    private $rootdir = __DIR__ . '/../directories';
+
+
+    public function createDirectoryAndFile($dirName, $content)
+    {
+        // if statement to make sure the directory name only contains letters and if not return false
+        if (!preg_match('/^[a-zA-Z]+$/', $dirName)) {
+            return [
+                'success' => false,
+                'message' => 'Directory name must contain only letters.'
+            ];
+        }
+
+        $fullPath = $this->rootdir . '/' . $dirName;
+
+        // Check if directory already exists with is_dir
+        if (is_dir($fullPath)) {
+            return [
+                'success' => false,
+                'message' => 'A directory already exists with that name.'
+            ];
+        }
+
+        // creating the directory with correct permissions
+        if (!mkdir($fullPath, 0777, true)) {
+            return [
+                'success' => false,
+                'message' => 'Failed to create directory.'
+            ];
+        }
+
+        // Create the readme.txt file
+        $filePath = $fullPath . '/readme.txt';
+        if (file_put_contents($filePath, $content) === false) {
+            return [
+                'success' => false,
+                'message' => 'Failed to create file.'
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Directory and file created successfully.'
+        ];
+    }
+}
