@@ -37,14 +37,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <p><?= htmlspecialchars($message) ?></p>
 <?php endif; ?>
 
-<form method="post">
-    <label for="directory_name">Directory Name (letters only):</label><br>
-    <input type="text" id="directory_name" name="directory_name" required><br><br>
+<!-- form styling and text -->
+<div class="container-fluid p-4">
+    <h2>File and Directory Assignment</h2>
+    <p>Enter a folder name and the contents of a file. Folder names should contain alpha numeric characters only.</p>
 
-    <label for="file_content">Text Content:</label><br>
-    <textarea id="file_content" name="file_content" rows="6" cols="40" required></textarea><br><br>
+    <form method="post">
+        <div class="mb-3">
+            <label for="directory_name" class="form-label">Folder Name</label>
+            <input type="text" id="directory_name" name="directory_name" 
+                   class="form-control" required style="width: 100%;">
+        </div>
 
-    <button type="submit">Submit</button>
+        <div class="mb-3">
+            <label for="file_content" class="form-label">File Content</label>
+            <textarea id="file_content" name="file_content" rows="10" 
+                      class="form-control" required style="width: 100%;"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
 </form>
 
 </body>
