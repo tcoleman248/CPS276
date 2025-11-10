@@ -4,11 +4,11 @@ require_once 'classes/Pdo_Methods.php';
 require_once 'classes/Validation.php';
 require_once 'classes/StickyForm.php';
 
-// Instantiate StickyForm object
+// Instantiate StickyForm 
 $form = new StickyForm();
 $pdo = new PdoMethods();
 
-// Initialize the form configuration
+// Initialize the form 
 $formConfig = [
     'first_name' => [
         'id' => 'first_name',
@@ -42,7 +42,7 @@ $formConfig = [
         'name' => 'password',
         'label' => 'Password',
         'type' => 'password',
-        'regex' => 'none', // we’ll validate length separately
+        'regex' => 'none', 
         'errorMsg' => 'Password is required.',
         'value' => '' 
     ],
@@ -55,17 +55,17 @@ $formConfig = [
         'errorMsg' => 'Password confirmation is required.',
         'value' => '' 
     ],
-    'masterStatus' => ['error' => false] // optional tracking
+    'masterStatus' => ['error' => false] 
 ];
 
-// Initialize form submission flag
+// Initialize form submission 
 $successMsg = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validate form
+    
     $formConfig = $form->validateForm($_POST, $formConfig);
 
-    // Additional validation: password length & match
+    //password length & match
     $password = $_POST['password'] ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
 
@@ -92,7 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Insert into DB if no errors
     if (!$formConfig['masterStatus']['error']) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $insertSql = "INSERT INTO users (first_name, last_name, email, password) VALUES (:first_name, :last_name, :email, :password)";
@@ -106,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $insertResult = $pdo->otherBinded($insertSql, $bindings);
         if ($insertResult === 'noerror') {
             $successMsg = 'Registration successful!';
-            // Clear form values
+            //clearing form values
             foreach ($formConfig as $key => $element) {
                 if ($key !== 'masterStatus') {
                     $formConfig[$key]['value'] = '';
@@ -116,7 +115,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch all users for display
 $users = $pdo->selectNotBinded("SELECT first_name, last_name, email, password FROM users ORDER BY id DESC");
 
 
@@ -127,7 +125,7 @@ $users = $pdo->selectNotBinded("SELECT first_name, last_name, email, password FR
 <head>
     <meta charset="UTF-8">
     <title>User Registration</title>
-    <!-- Bootstrap CSS CDN (optional, for styling) -->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="container py-4">
@@ -139,7 +137,7 @@ $users = $pdo->selectNotBinded("SELECT first_name, last_name, email, password FR
 <?php endif; ?>
 
 <form method="POST" action="">
-  <!-- First row: First Name / Last Name -->
+  <!-- First Name / Last Name -->
   <div class="row mb-3">
     <div class="col-md-6">
       <?php echo $form->renderInput($formConfig['first_name']); ?>
@@ -149,7 +147,7 @@ $users = $pdo->selectNotBinded("SELECT first_name, last_name, email, password FR
     </div>
   </div>
 
-  <!-- Second row: Email / Password / Confirm Password -->
+  <!-- Email / Password / Confirm Password -->
   <div class="row mb-3">
     <div class="col-md-4">
       <?php echo $form->renderInput($formConfig['email']); ?>
@@ -165,8 +163,7 @@ $users = $pdo->selectNotBinded("SELECT first_name, last_name, email, password FR
   <button type="submit" class="btn btn-primary">Register</button>
 </form>
 
-
-
+    
 <hr>
 
 <h3>Registered Users</h3>
@@ -186,7 +183,7 @@ $users = $pdo->selectNotBinded("SELECT first_name, last_name, email, password FR
                     <td><?= htmlspecialchars($user['first_name']) ?></td>
                     <td><?= htmlspecialchars($user['last_name']) ?></td>
                     <td><?= htmlspecialchars($user['email']) ?></td>
-                    <td><?= htmlspecialchars($user['password']) ?></td> <!-- Show hashed password -->
+                    <td><?= htmlspecialchars($user['password']) ?></td> <!-- hashed password -->
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
